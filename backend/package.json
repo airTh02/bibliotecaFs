@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.14.4",
+    "sequelize": "^6.37.7"
+  },
+  "type": "module",
+  "name": "biblioteca-backend",
+  "version": "1.0.0",
+  "description": "API da Biblioteca Virtual",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airTh02/bibliotecaFs.git"
+  },
+  "author": "thiago rezende",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/airTh02/bibliotecaFs/issues"
+  },
+  "homepage": "https://github.com/airTh02/bibliotecaFs#readme"
+}
