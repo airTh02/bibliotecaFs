@@ -115,3 +115,82 @@ export const createBook = async (req, res) => {
         return res.status(500).json({ message: 'erro ao criar novo livro' })
     }
 }
+
+
+export const editBook = async (req, res) => {
+    try {
+        //pegar id do livro
+        const { id } = req.params
+
+        // validar iD
+        if (!id || isNaN(id)) {
+            return res.status(400).json({ message: 'ID inválido' });
+        }
+
+        //validar os campos recebidos para atualização dos livros
+        await body('title').optional().notEmpty().withMessage('Título é obrigatorio').run(req)
+        await body('author').optional().notEmpty().withMessage('autor nao pode estar vazio').run(req)
+        await body('genre').optional().notEmpty().withMessage('genero nao pode estar vazio').run(req)
+        await body('year').optional().isInt({ min: 0 }).withMessage('ano deve ser um numero positivo').run(req)
+        await body('synopsis').optional().isLength({ max: 5000 }).withMessage('sinopse muito loga').run(req)
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+
+        // buscar o livro no banco
+
+        const book = await Book.findByPk(id)
+        if (!book) {
+            return res.status(403).json({ message: 'livro nao encontrado' })
+        }
+
+        // pegar dados e atualizar
+        const { title, author, genre, year, synopsis } = req.body
+
+        await book.update({
+            title: title ?? book.title,
+            author: author ?? book.author,
+            genre: genre ?? book.genre,
+            year: year ?? book.year,
+            synopsis: synopsis ?? book.synopsis
+        })
+
+        //retornar resposta pro banco
+        return res.status(200).json({
+            message: 'livro atualizado com sucesso',
+            book,
+        })
+    } catch (error) {
+        console.error("erro em editbook", error)
+        return res.status(500).json({ message: 'erro ao atualizar livro' })
+    }
+}
+
+
+export const deleteBook = async (req, res) => {
+    try {// pegar o ID do livro
+        const { id } = req.params
+
+        // verificar se o livro realmente existe
+        if (!id || isNaN(id)) {
+            return res.status(400).json({ message: 'esse livro n existe' })
+        }
+
+        //procurar livro no banco de dados
+        const book = await Book.findByPk(id)
+        if (!book) {
+            return res.status(404).json({ message: 'livro não existe' })
+        }
+
+        // deletar livro do banco
+        await book.destroy()
+
+        return res.status(200).json({ message: 'livro destruido com sucesso. ' })
+    } catch(error) {
+        console.error("erro no deletebook", error)
+        return res.status(500).json({message: 'erro ao deletar livro'})
+    }
+}
+
