@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
+import bookRoutes from './routes/bookRoutes.js'
 import dotenv from 'dotenv'
+
 
 const app = express()
 const port = 3000
@@ -14,6 +16,7 @@ dotenv.config()
 // importar as rotas
 
 app.use('/auth', authRoutes);
+app.use('/books', bookRoutes);
 
 
 app.listen(port, () => {
