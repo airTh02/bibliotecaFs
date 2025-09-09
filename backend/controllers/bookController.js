@@ -62,7 +62,7 @@ export const getBookById = async (req, res) => {
 
         // validar ID 
         if (!id || isNaN(id)) {
-            return res.status(400).json({ message: 'ID inválido' })
+            return res.status(400).json({ message: 'ID inválido22' })
         }
 
         // buscar livro no banco usando orm, sequelize. Findbypk = find by primary key
@@ -236,8 +236,113 @@ export const favoriteBook = async (req, res) => {
             favorite: userBook.favorite
         })
     } catch (error) {
-        console.error("erro no favoriteBook" , error)
-        return res.status(500).json({message: 'erro ao atualizar favorito.'})
+        console.error("erro no favoriteBook", error)
+        return res.status(500).json({ message: 'erro ao atualizar favorito.' })
     }
-    
+
+}
+
+export const bookStatus = async (req, res) => {
+    try {
+        // parametros
+        const { id } = req.params
+        const { status } = req.body
+
+        // verificar se o livro realmente existe
+        if (!id || isNaN(id)) {
+            return res.status(401).json({ message: 'erro de parametro' })
+        }
+
+        //verificar status
+        const validStatus = ['lido', 'lendo', 'quer ler', 'nenhum']
+        if (!validStatus.includes(status)) {
+            return res.status(400).json({ message: 'status inválido' })
+        }
+
+        //achar o livro
+        const book = await Book.findByPk(id);
+        if (!book) {
+            return res.status(404).json({ message: 'livro nao encontrado' })
+        }
+
+        // verificar se o usuário ja tem um registro naquele livro
+
+        let userBookStatus = await UserBook.findOne({
+            where: {
+                user_id: req.user.id,
+                book_id: id
+            }
+        })
+
+        // enviar status pro banco de dados
+        if (userBookStatus) {
+            userBookStatus.status = status
+            await userBookStatus.save()
+        } else {
+            userBookStatus = await UserBook.create({
+                user_id: req.params.id,
+                book_id: id,
+                favorite: false,
+                status: status
+            })
+        }
+
+        res.json({
+            message: 'status alterado com sucesso',
+            status: book.status
+        })
+
+    } catch (error) {
+        console.error("erro no bookStatus", error)
+        return res.status(500).json({ message: 'erro ao atualizar status' })
+    }
+}
+
+export const getDashboard = async (req, res) => {
+    try {
+        // pegando todos os dados da database
+        const totalBooks = await Book.findAndCountAll({
+            attributes: ['title'],
+            order: [['title', 'DESC']]
+        })
+        
+        const totalLidos = await UserBook.count({
+            where: {
+                user_id: req.user.id,
+                status: 'lido'
+            }
+        });
+        const totalLendo = await UserBook.count({
+            where: {
+                user_id: req.user.id,
+                status: 'lendo'
+            }
+        });
+        const totalQuerLer = await UserBook.count({
+            where: {
+                user_id: req.user.id,
+                status: "quer ler"
+            }
+        })
+        const totalFavoritos = await UserBook.count({
+            where: {
+                user_id: req.user.id,
+                favorite: true
+            }
+        })
+
+        // enviando o json na req
+        res.json({
+            totalBooks,
+            totalLidos,
+            totalLendo,
+            totalQuerLer,
+            totalFavoritos,
+        })
+
+
+    } catch (error) {
+        console.error("erro no getdashboard", error);
+        return res.status(500).json({ message: 'erro ao busca dados do dashboars' })
+    }
 }
