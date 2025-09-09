@@ -1,5 +1,6 @@
 import { Op } from 'sequelize'
 import Book from '../models/tableBook.js'
+import UserBook from '../models/tableUserBook.js';
 import { body, validationResult } from 'express-validator';
 
 export const getBooks = async (req, res) => {
@@ -188,9 +189,55 @@ export const deleteBook = async (req, res) => {
         await book.destroy()
 
         return res.status(200).json({ message: 'livro destruido com sucesso. ' })
-    } catch(error) {
+    } catch (error) {
         console.error("erro no deletebook", error)
-        return res.status(500).json({message: 'erro ao deletar livro'})
+        return res.status(500).json({ message: 'erro ao deletar livro' })
     }
 }
 
+export const favoriteBook = async (req, res) => {
+    try {
+        //pegar id do livro
+        const { id } = req.params
+        // conferir se id ta certo
+        if (!id || isNaN(id)) {
+            return res.status(400).json({ message: 'parametro de livro errado' })
+        }
+        /// livro existe? 
+        const book = await Book.findByPk(id)
+        if (!book) {
+            return res.status(404).json({ message: 'livro nao existe no banco de dados' })
+        }
+        //verificar se ja existe algum registro de favoritos para esse usuário e livro
+        let userBook = await UserBook.findOne({
+            where: {
+                user_id: req.user.id,
+                book_id: id
+            }
+        })
+
+        // alterar status de favorito   
+        if (userBook) {
+            userBook.favorite = !userBook.favorite
+            await userBook.save()
+        } else {
+            userBook = await UserBook.create({
+                user_id: req.user.id,
+                book_id: id,
+                favorite: true,
+                status: "nenhum"
+            })
+        }
+
+        //retorna a resposta
+
+        return res.json({
+            message: userBook.favorite ? 'Livro favoritado' : 'Livro desfavoritado',
+            favorite: userBook.favorite
+        })
+    } catch (error) {
+        console.error("erro no favoriteBook" , error)
+        return res.status(500).json({message: 'erro ao atualizar favorito.'})
+    }
+    
+}
