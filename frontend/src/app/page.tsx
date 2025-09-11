@@ -1,10 +1,12 @@
+import { ModeToggle } from "@/components/dark-light"
+import { Login } from "@/pages/login"
+
 const Home = () => {
-  return(
-    <div className="">
-      <div className="w-32 h-32 bg-white">
-        <div className="text-amber-700">aaa</div>
-      </div>
+  return (
+    <div>
+      <Login />
     </div>
+
   )
 }
 
