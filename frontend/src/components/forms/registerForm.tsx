@@ -8,44 +8,36 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { ModeToggle } from '../dark-light'
-import { useAuth } from '@/context/authContext'
 
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+    name: z.string().min(1, "Digite seu nome completo"),
     email: z.email("E-mail válido"),
     password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres')
 })
 
-type LoginFormType = z.infer<typeof loginSchema>
+type RegisterFormType = z.infer<typeof registerSchema>
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
 
-    const form = useForm<LoginFormType>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<RegisterFormType>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
+            name: '',
             email: '',
             password: ''
         }
     })
 
     const router = useRouter()
-    const { setUser } = useAuth()
 
-    const onSubmit = async (values: LoginFormType) => {
+    const onSubmit = async (values: RegisterFormType) => {
         try {
-            const { data } = await axios.post("http://localhost:5000/auth/login", values)
-
-            localStorage.setItem("token", data.token)
-
-            const meResponse = await axios.get("http://localhost:5000/auth/me", {
-                headers: { Authorization: `Bearer ${data.token}` }
-            })
-
-            setUser(meResponse.data.user)
-
+            const { data } = await axios.post("http://localhost:5000/auth/register", values)
+            
             router.push("/dashboard")
         } catch (error: any) {
-            alert(error.response?.data?.message || "erro no login")
+            alert(error.response?.data?.message || "erro ao se cadastrar")
         }
 
     }
@@ -57,7 +49,7 @@ export const LoginForm = () => {
                 <ModeToggle />
             </div>
             <div className='w-full max-w-md space-y-6 rounded-lg border p-6 shadow'>
-                <h1 className=''>Login</h1>
+                <h1 className=''>Cadastre-se</h1>
 
                 <Form {...form}>
                     <form
@@ -66,10 +58,23 @@ export const LoginForm = () => {
                     >
                         <FormField
                             control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nome</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder='Digite seu nome' {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>E-mail</FormLabel>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input placeholder='Digite seu e-mail' {...field} />
                                     </FormControl>
@@ -91,7 +96,7 @@ export const LoginForm = () => {
                             )}
                         />
                         <Button type='submit' className='w-full cursor-pointer'>
-                            Entrar
+                            Cadastrar-se
                         </Button>
                     </form>
                 </Form>

@@ -1,10 +1,10 @@
 import { ModeToggle } from "@/components/dark-light"
-import { Login } from "@/pages/login"
+import { InitialPage } from "@/pages/initalPage"
 
 const Home = () => {
   return (
     <div>
-      <Login />
+      <InitialPage/>
     </div>
 
   )

@@ -1,6 +1,7 @@
 import express from 'express'
 import { createBook, getBookById, getBooks, editBook, deleteBook, favoriteBook, bookStatus, getDashboard } from '../controllers/bookController.js'
 import { auth } from '../middlewares/auth.js';
+import { isAdmin } from '../middlewares/isAdmin.js';
 
 const router = express.Router()
 
@@ -10,14 +11,14 @@ router.get('/', getBooks)
 router.get('/:id', getBookById)
 
 
-router.post('/', auth, createBook)
+router.post('/', auth, isAdmin, createBook) //isAdmin
 router.post('/:id/favorite', auth, favoriteBook)
 
-router.put('/:id', auth, editBook)
-router.patch('/:id/status', auth, bookStatus)
+router.put('/:id', auth, isAdmin, editBook) //isAdmin
+router.patch('/:id/status', auth, isAdmin, bookStatus)
 
 
-router.delete('/:id', auth, deleteBook)
+router.delete('/:id', auth, deleteBook) //isAdmin
 
 
 

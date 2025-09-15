@@ -35,7 +35,8 @@ export const registerUser = async (req, res) => {
         const newUser = await User.create({
             name,
             email,
-            password: passwordHash
+            password: passwordHash,
+            role: "user"
         })
 
         res.status(201).json({
@@ -70,7 +71,7 @@ export const loginUser = async (req, res) => {
 
         // gera um token jwt com id e email
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_KEY,
             { expiresIn: "2h" }
         );
@@ -79,9 +80,31 @@ export const loginUser = async (req, res) => {
         res.status(200).json({
             message: "Login realizado com sucesso",
             token,
+            user: {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            }
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'erro no servidor' })
+    }
+}
+
+export const getUser = async (req, res) => {
+    // pegar usuário
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: ['id', 'name', 'email', 'role']
+        })
+
+        if (!user) {
+            return res.status(404).json({ message: 'usuário nao encontrado' })
+        }
+
+        res.json({ user })
+    } catch (error) {
+        res.status(500).json({message: 'erro no servidor'})
     }
 }

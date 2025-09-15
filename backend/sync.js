@@ -1,4 +1,4 @@
-import sequelize from "./database/config.js";
+import sequelize from "./config/database.js";
 import User from "./models/tableUser.js";
 import Book from "./models/tableBook.js";
 import UserBook from "./models/tableUserBook.js";
