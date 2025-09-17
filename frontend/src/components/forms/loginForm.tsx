@@ -45,6 +45,7 @@ export const LoginForm = () => {
 
             router.push("/dashboard")
         } catch (error: any) {
+            console.error("erro no submit", error)
             alert(error.response?.data?.message || "erro no login")
         }
 

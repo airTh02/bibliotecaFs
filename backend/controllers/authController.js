@@ -39,9 +39,24 @@ export const registerUser = async (req, res) => {
             role: "user"
         })
 
+
+        //criar token 
+        const token = jwt.sign(
+            { id: newUser.id, name: newUser.name, email: newUser.email },
+            process.env.JWT_KEY,
+            { expiresIn: "2h" }
+        );
+
         res.status(201).json({
             message: 'usuário criado',
-            userId: newUser.id
+            token,
+            user: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role
+            },
+        
         });
     } catch (err) {
         console.error(err);
@@ -105,6 +120,6 @@ export const getUser = async (req, res) => {
 
         res.json({ user })
     } catch (error) {
-        res.status(500).json({message: 'erro no servidor'})
+        res.status(500).json({ message: 'erro no servidor' })
     }
 }

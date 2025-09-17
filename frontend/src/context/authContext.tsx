@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import axios from 'axios'
 
+
 type AuthContextType = {
     user: User | null;
     setUser: (user: User | null) => void
@@ -41,11 +42,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [])
 
+
     const logout = () => {
         localStorage.removeItem("token")
         setUser(null)
         router.push("/login")
     }
+
 
     return (
         <AuthContext.Provider value={{ user, setUser, logout }} >

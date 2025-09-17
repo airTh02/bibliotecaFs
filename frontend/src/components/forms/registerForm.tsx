@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import { ModeToggle } from '../dark-light'
+import { useAuth } from '@/context/authContext'
 
 
 const registerSchema = z.object({
@@ -30,11 +31,15 @@ export const RegisterForm = () => {
     })
 
     const router = useRouter()
+    const { setUser } = useAuth()
 
     const onSubmit = async (values: RegisterFormType) => {
         try {
             const { data } = await axios.post("http://localhost:5000/auth/register", values)
-            
+
+            localStorage.setItem("token", data.token)
+            setUser(data.user)
+
             router.push("/dashboard")
         } catch (error: any) {
             alert(error.response?.data?.message || "erro ao se cadastrar")
