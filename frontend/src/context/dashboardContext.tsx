@@ -1,21 +1,47 @@
-import {  Book, DashBoardData } from "@/types/dashboard";
+import { getDashboard } from "@/api/dashboard";
+import { DashboardData } from "@/types/dashboard";
 import { User } from "@/types/user";
-import { createContext, ReactNode } from "react";
+import axios from "axios";
+import { Children, createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type DashboardContextType = {
-    user: User | null
-    books: Book[]
+    data: DashboardData | null
     loading: boolean
-    refreshDashboard: () => void
+    refreshLoading: () => Promise<void>
 }
 
 const DashboardContext = createContext<DashboardContextType>({
-   user: null,
-   books: [],
-   loading: false,
-   refreshDashboard: () => {}
+    data: null,
+    loading: false,
+    refreshLoading: async () => { }
 })
 
-export const dashBoardProvicer = ({children}: {children: ReactNode}) => {
+export const dashBoardProvider = ({ children }: { children: ReactNode }) => {
+    const [data, setData] = useState<DashboardData | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
 
+    const fetchDashboard = async () => {
+        try {
+            setLoading(true)
+            const token = localStorage.getItem("token")
+            if (!token) return
+
+            const res = await getDashboard(token)
+            setData(res)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchDashboard()
+    }, [])
+
+    return (
+        <DashboardContext.Provider value={{ data, loading, refreshLoading: fetchDashboard }}>
+            {children}
+        </DashboardContext.Provider>
+    )
 }
+
+export const useDashboard = useContext(DashboardContext)

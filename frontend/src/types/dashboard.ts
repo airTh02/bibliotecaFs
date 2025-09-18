@@ -1,14 +1,18 @@
 import { User } from "./user";
 
-export type Book = {
-    title: string;
-    author: string
-    genre: string
-    year: number;
-    synopsis?: string
+export type BookRow = {
+    title: string
 }
 
-export type DashBoardData = {
-    user: User
-    books: Book[]
+export type TotalBooks = {
+    count: number
+    rows: BookRow[]
+}
+
+export type DashboardData = {
+    totalBooks: TotalBooks
+    totalLidos: number
+    totalLendo: number
+    totalQuerLer: number
+    totalFavoritos: number
 }
