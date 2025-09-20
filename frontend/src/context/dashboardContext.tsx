@@ -7,16 +7,16 @@ import { Children, createContext, ReactNode, useContext, useEffect, useState } f
 type DashboardContextType = {
     data: DashboardData | null
     loading: boolean
-    refreshLoading: () => Promise<void>
+    refreshDashboard: () => Promise<void>
 }
 
 const DashboardContext = createContext<DashboardContextType>({
     data: null,
     loading: false,
-    refreshLoading: async () => { }
+    refreshDashboard: async () => { }
 })
 
-export const dashBoardProvider = ({ children }: { children: ReactNode }) => {
+export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     const [data, setData] = useState<DashboardData | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -25,10 +25,12 @@ export const dashBoardProvider = ({ children }: { children: ReactNode }) => {
             setLoading(true)
             const token = localStorage.getItem("token")
             if (!token) return
-
             const res = await getDashboard(token)
             setData(res)
-        } finally {
+        } catch (error){
+            console.error("erro no fetchdashboard ", error)
+        }
+        finally {
             setLoading(false)
         }
     }
@@ -38,10 +40,11 @@ export const dashBoardProvider = ({ children }: { children: ReactNode }) => {
     }, [])
 
     return (
-        <DashboardContext.Provider value={{ data, loading, refreshLoading: fetchDashboard }}>
+        <DashboardContext.Provider value={{ data, loading, refreshDashboard: fetchDashboard }}>
             {children}
         </DashboardContext.Provider>
     )
+    
 }
 
-export const useDashboard = useContext(DashboardContext)
+export const useDashboard = () => useContext(DashboardContext)
