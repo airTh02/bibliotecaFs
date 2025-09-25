@@ -1,7 +1,6 @@
 import { getDashboard } from "@/api/dashboard";
 import { DashboardData } from "@/types/dashboard";
-import { User } from "@/types/user";
-import axios from "axios";
+
 import { Children, createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type DashboardContextType = {
