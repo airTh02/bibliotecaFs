@@ -9,3 +9,10 @@ export const getDashboard = async (token: string) => {
     })
     return data
 }
+
+export const getBooks = async(token: string) => {
+    const {data} = await axios.get(`${API_URL}/books` , {
+        headers: {Authorization: `Bearer ${token}`}
+    })
+    return data
+}

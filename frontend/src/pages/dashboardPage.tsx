@@ -7,6 +7,7 @@ import { useDashboard } from "@/context/dashboardContext";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Filtering } from "@/components/filtering";
+import { BookList } from "@/components/bookCardsList";
 
 
 
@@ -58,11 +59,11 @@ export const Dashboard = () => {
                 <Image src={lidos} alt="lidos" width={32} height={32} />
 
                 <div className="flex items-center justify-between w-full">
-                    <h1 className="text-[24px] font-bold">Meus Livros</h1>
-                    <Button className="cursor-pointer bg-gray-900 hover:bg-gray-700"><span>+</span>Adicionar Livro</Button>
+                    <h1 className="text-[24px] font-bold">Minha estante</h1>
                 </div>
             </div>
             <Filtering/>
+            <BookList />
         </div>
     );
 };
