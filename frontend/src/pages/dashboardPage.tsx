@@ -14,16 +14,16 @@ import { BookList } from "@/components/bookCardsList";
 
 export const Dashboard = () => {
 
-    const { data, loading } = useDashboard()
+    const { data} = useDashboard()
 
 
     return (
-        <div className="container flex flex-col w-full h-screen max-w-6xl m-auto gap-6">
+        <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
             <div className="flex items-center justify-start gap-3 ">
                 <Image src={lidos} alt="lidos" width={32} height={32} />
                 <h1 className="text-[24px] font-bold">Dashboard</h1>
             </div>
-            <div className="flex  items-center w-full gap-8 ">
+            <div className="flex  items-center w-full gap-10 ">
                 <DashboardInfoCards
                     data={data?.totalBooks.count ?? 0}
                     name={'Total de Livros'}

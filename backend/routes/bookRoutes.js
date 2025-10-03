@@ -7,7 +7,7 @@ const router = express.Router()
 
 
 router.get('/dashboard', auth, getDashboard)
-router.get('/', getBooks)
+router.get('/', auth, getBooks)
 router.get('/:id', getBookById)
 
 
@@ -15,7 +15,7 @@ router.post('/', auth, isAdmin, createBook) //isAdmin
 router.post('/:id/favorite', auth, favoriteBook)
 
 router.put('/:id', auth, isAdmin, editBook) //isAdmin
-router.patch('/:id/status', auth, isAdmin, bookStatus)
+router.patch('/:id/status', auth, bookStatus)
 
 
 router.delete('/:id', auth, deleteBook) //isAdmin

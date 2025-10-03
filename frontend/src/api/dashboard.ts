@@ -1,3 +1,4 @@
+import { StatusType } from "@/types/books"
 import axios from "axios"
 
 
@@ -15,4 +16,13 @@ export const getBooks = async(token: string) => {
         headers: {Authorization: `Bearer ${token}`}
     })
     return data
+}
+
+export const putStatus = async(id: number, token: string, status: StatusType) => {
+    const {data} = await axios.patch(
+        `${API_URL}/books/${id}/status`, 
+        {status},
+        {headers: {Authorization: `Bearer ${token}`}}
+    )
+    return data.status
 }

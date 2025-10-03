@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 import Book from '../models/tableBook.js'
 import UserBook from '../models/tableUserBook.js';
 import { body, validationResult } from 'express-validator';
+import User from '../models/tableUser.js';
 
 export const getBooks = async (req, res) => {
     try {
@@ -35,7 +36,18 @@ export const getBooks = async (req, res) => {
             where,
             limit,
             offset,
-            order: [['title', 'ASC']]
+            order: [['title', 'ASC']],
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'name'],
+                    where: { id: req.user.id },
+                    required: false,
+                    through: {
+                        attributes: ['status', 'favorite']
+                    }
+                }
+            ]
         })
 
         // calcular total de páginas e montar resposta
@@ -281,7 +293,7 @@ export const bookStatus = async (req, res) => {
         } else {
             userBookStatus = await UserBook.create({
                 user_id: req.params.id,
-                book_id: id,
+                book_id: id, 
                 favorite: false,
                 status: status
             })
@@ -305,7 +317,7 @@ export const getDashboard = async (req, res) => {
             attributes: ['title'],
             order: [['title', 'DESC']]
         })
-        
+
         const totalLidos = await UserBook.count({
             where: {
                 user_id: req.user.id,
