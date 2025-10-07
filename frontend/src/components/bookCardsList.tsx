@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react"
 import { BookCard } from "./bookCards"
-import { Book, StatusType} from "@/types/books"
-import { getBooks, putStatus } from "@/api/dashboard"
+import { Book, StatusType } from "@/types/books"
+import { deleteBookFromUser, getBooks, getUserBooks, putStatus } from "@/api/dashboard"
 import { useDashboard } from "@/context/dashboardContext"
 
 // TODO: sla
 
-
+type UserBookResponse = {
+    status: StatusType;
+    favorite: boolean;
+    Book: Book;
+};
 
 
 export const BookList = () => {
@@ -16,29 +20,52 @@ export const BookList = () => {
     const [data, setData] = useState<Book[]>([])
 
 
-    const booksReq = async () => {
+   const userbooksReq = async () => {
         const token = localStorage.getItem('token')
-        if(!token) return
-        const data = await getBooks(token)
-        setData(data.books)
-        
+        if (!token) return
+        const userBook = await getUserBooks(token)
+
+        const formatedData = userBook.map((ub: UserBookResponse) => ({
+            ...ub.Book,
+            status: ub.status,
+            favorite: ub.favorite
+        }))
+        console.log(formatedData)
+        setData(formatedData)
+
+    } 
+
+    /*const getBooksReq = async () => {
+        const token = localStorage.getItem('token')
+        if (!token) return
+
+        const {data} = await getBooks(token)
+        setData(data)
+    }*/
+
+    const changeStatus = async (bookId: number, newStatus: StatusType) => {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        const updatedStatus = await putStatus(bookId, token, newStatus)
+        setData(prevData => prevData.map(book =>
+            book.id === bookId ? { ...book, userBooks: [{ status: updatedStatus }] } : book
+        ))
+
+        await refreshDashboard()
     }
 
-    const changeStatus = async (bookId:number, newStatus: StatusType ) => {
+    const deleteUserBook = async (bookId: number) => {
         const token = localStorage.getItem('token')
         if(!token) return
-        const updatedStatus = await putStatus(bookId, token, newStatus)
-        setData(prevData => prevData.map(book => 
-            book.id === bookId ? {...book, userBooks: [{status: updatedStatus}]} : book
-         ))
-
-         await refreshDashboard()
+        const remove = await deleteBookFromUser(bookId, token)
+        
+        setData(prev => prev.filter(book => book.id !== bookId))
     }
 
     useEffect(() => {
-        booksReq()
+        userbooksReq()
     }, [])
-    
+
     return (
         <div className="grid grid-cols-3 gap-6">
             {data.map((book) => (

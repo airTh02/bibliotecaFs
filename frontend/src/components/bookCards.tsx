@@ -1,4 +1,4 @@
-import { Heart, EllipsisVertical, UserRound, Calendar } from 'lucide-react';
+import { Heart, EllipsisVertical, UserRound, Calendar, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
 import {
     Select,
@@ -6,9 +6,16 @@ import {
     SelectItem,
     SelectTrigger
 } from "@/components/ui/select"
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from 'react';
 import { Book, StatusType } from '@/types/books';
-import { putStatus } from '@/api/dashboard';
+import { Modal2 } from './ui/modal2';
+
 
 //TODO: arrumar esse status aqui logica de merda
 
@@ -17,12 +24,12 @@ type Props = {
     onChangeStatus: (bookId: number, newStatus: StatusType) => void
 }
 
-
 export const BookCard = ({ book, onChangeStatus }: Props) => {
 
 
     const initialStatus = book.Users?.[0]?.UserBook?.status || 'nenhum';
     const [status, setStatus] = useState<StatusType>(initialStatus)
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
     const handleStatus = async (newStatus: StatusType) => {
         setStatus(newStatus)
@@ -34,6 +41,12 @@ export const BookCard = ({ book, onChangeStatus }: Props) => {
             .split(" ")
             .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
             .join(" ")
+
+    }
+    const handleOpenModalRemove = () => {
+        setIsModalOpen(true)
+    }
+    const handleRemoveFromBookcase = () => {
 
     }
 
@@ -51,8 +64,39 @@ export const BookCard = ({ book, onChangeStatus }: Props) => {
                         <p className='text-sm text-gray-400 flex items-center gap-2 '><UserRound size={16} />{book.author}</p>
                     </div>
                     <div className='flex gap-3 '>
+
                         <Button variant={"outline"} className='cursor-pointer text-gray-400 border-0 hover:text-red-600 hover:bg-gray-900'><Heart size={16} /></Button>
-                        <Button variant={"outline"} className='cursor-pointer text-gray-400 border-0 hover:text-white hover:bg-gray-900 '><EllipsisVertical size={16} /></Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="cursor-pointer text-gray-400 border-0 hover:text-white hover:bg-gray-900"
+                                >
+                                    <EllipsisVertical size={16} />
+                                </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="px-1">
+                                <DropdownMenuItem
+                                    onClick={handleOpenModalRemove}
+                                    className=" text-black focus:text-white focus:bg-gray-700"
+                                >
+                                    <Trash2 className="focus:text-white" /> Remover da Estante
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {isModalOpen &&
+                            <Modal2
+                                open={isModalOpen}
+                                setModal={setIsModalOpen}
+                                onConfirm={() => alert('sua mamae')}
+                                title='TÍTULO'
+                                description='descrição'
+                                button1='Cancelar'
+                                button2='Remover'
+                            />
+                        }
                     </div>
                 </div>
                 <div className='flex justify-between mt-2 items-center'>

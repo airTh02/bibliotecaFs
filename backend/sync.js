@@ -1,14 +1,13 @@
 import sequelize from "./config/database.js";
-import User from "./models/tableUser.js";
-import Book from "./models/tableBook.js";
-import UserBook from "./models/tableUserBook.js";
+import './models/association.js'
+
 
 const syncDatabase = async () => {
     try {
         await sequelize.authenticate();
         console.log("Conectado ao MySQL com Sequelize");
 
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: alter });
         console.log("Tabelas criadas");
 
         process.exit();

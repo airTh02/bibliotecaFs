@@ -20,8 +20,7 @@ const UserBook = sequelize.define("UserBook", {
         underscored: true
     })
 
-User.belongsToMany(Book, {through: UserBook, foreignKey: "user_id"});
-Book.belongsToMany(User, {through: UserBook, foreignKey: "book_id"});
+
 
 
 export default UserBook;

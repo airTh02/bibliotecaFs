@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+import Book from "./tableBook.js";
+import UserBook from "./tableUserBook.js";
 
 const User = sequelize.define("User", {
 
@@ -26,6 +28,9 @@ const User = sequelize.define("User", {
     timestamps: true,
     underscored: true
 });
+
+
+
 
 
 export default User

@@ -1,7 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
-import User from '../models/tableUser.js';
+import {User} from '../models/association.js'
 
 // função para lidar com o metodo POST /register
 

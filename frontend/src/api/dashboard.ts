@@ -10,7 +10,12 @@ export const getDashboard = async (token: string) => {
     })
     return data
 }
-
+export const getUserBooks = async(token: string) => {
+    const {data} = await axios.get(`${API_URL}/books/userbooks` ,{
+        headers: {Authorization: `Bearer ${token}`}
+    })
+    return data
+}
 export const getBooks = async(token: string) => {
     const {data} = await axios.get(`${API_URL}/books` , {
         headers: {Authorization: `Bearer ${token}`}
@@ -25,4 +30,11 @@ export const putStatus = async(id: number, token: string, status: StatusType) =>
         {headers: {Authorization: `Bearer ${token}`}}
     )
     return data.status
+}
+
+export const deleteBookFromUser = async (id: number, token: string) => {
+    const {data} = await axios.delete(`${API_URL}/user/${id}`, {
+        headers: {Authorization: `Bearer ${token}`}
+    })
+    return data
 }

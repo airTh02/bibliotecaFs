@@ -1,8 +1,9 @@
 import { Op } from 'sequelize'
-import Book from '../models/tableBook.js'
-import UserBook from '../models/tableUserBook.js';
+import { User, Book, UserBook } from "../models/association.js"
+
 import { body, validationResult } from 'express-validator';
-import User from '../models/tableUser.js';
+
+
 
 export const getBooks = async (req, res) => {
     try {
@@ -292,8 +293,8 @@ export const bookStatus = async (req, res) => {
             await userBookStatus.save()
         } else {
             userBookStatus = await UserBook.create({
-                user_id: req.params.id,
-                book_id: id, 
+                user_id: req.user.id,
+                book_id: id,
                 favorite: false,
                 status: status
             })
@@ -356,5 +357,41 @@ export const getDashboard = async (req, res) => {
     } catch (error) {
         console.error("erro no getdashboard", error);
         return res.status(500).json({ message: 'erro ao busca dados do dashboars' })
+    }
+}
+
+export const getUserBooks = async (req, res) => {
+    try {
+
+        const user = req.user.id
+
+        const userBooks = await UserBook.findAll({
+            where: {user_id: user},
+            include: [{model: Book}]
+        })
+
+        res.json(userBooks)
+
+    } catch (err) {
+        console.error("erro no getuserbooks", err)
+    }
+}
+
+export const removeUserBooks = async (req, res) =>{
+    try {
+        const id = req.params.id
+        const user = req.user.id
+        
+        const bookDeleted = await UserBook.destroy({
+            where: {user_id: user, book_id: id }
+        })
+
+        if(!bookDeleted) return res.status(404).json({message: 'livro não encontrado na estante'})
+
+        return res.status(200).json({message: 'livro deletado da estante com sucesso.'})    
+        
+    } catch (err) {
+        console.error("erro no removeUserBooks" , err)
+        return res.status(500).json({message: 'erro ao deletar usuario'})
     }
 }
