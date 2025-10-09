@@ -1,68 +1,59 @@
 import { DashboardInfoCards } from "@/components/dashboardInfoCards";
-import livros from "../../public/assets/livros.svg"
-import lendo from "../../public/assets/lendo.svg"
-import lidos from "../../public/assets/lidos.svg"
-import favorito from "../../public/assets/favorite.svg"
 import { useDashboard } from "@/context/dashboardContext";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Filtering } from "@/components/filtering";
 import { BookList } from "@/components/bookCardsList";
-
+import { BookOpen, Book, Eye, List, Heart } from 'lucide-react';
 
 
 
 export const Dashboard = () => {
 
-    const { data} = useDashboard()
+    const { data } = useDashboard()
 
 
     return (
         <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
-            <div className="flex items-center justify-start gap-3 ">
-                <Image src={lidos} alt="lidos" width={32} height={32} />
-                <h1 className="text-[24px] font-bold">Dashboard</h1>
-            </div>
-            <div className="flex  items-center w-full gap-10 ">
+
+            <div className="flex  items-center w-full gap-5 mt-2">
                 <DashboardInfoCards
                     data={data?.totalBooks.count ?? 0}
                     name={'Total de Livros'}
-                    emoji={livros}
-                    color={'yellow'}
+                    emoji={<Book size={20} className="text-white" />}
+                    color={'blue'}
                 />
                 <DashboardInfoCards
                     data={data?.totalLidos ?? 0}
                     name={'Total lidos'}
-                    emoji={lidos}
-                    color={'yellow'}
+                    emoji={<BookOpen size={20} className="text-white" />}
+                    color={'blue'}
                 />
                 <DashboardInfoCards
                     data={data?.totalLendo ?? 0}
                     name={'Total lendo'}
-                    emoji={lendo}
-                    color={'blue'}
+                    emoji={<Eye size={20} className="text-white" />}
+                    color={'bluelight'}
                 />
                 <DashboardInfoCards
                     data={data?.totalQuerLer ?? 0}
                     name={'Total quero ler'}
-                    emoji={livros}
-                    color={'green'}
+                    emoji={<List  size={20} className="text-white" />}
+                    color={'purple'}
                 />
                 <DashboardInfoCards
                     data={data?.totalFavoritos ?? 0}
                     name={'Total favoritos'}
-                    emoji={favorito}
-                    color={'red'}
+                    emoji={<Heart size={20} className="text-white" />}
+                    color={'orange'}
                 />
             </div>
             <div className="flex items-center justify-start gap-3 mt-10">
-                <Image src={lidos} alt="lidos" width={32} height={32} />
+                <BookOpen size={25} className="text-blue-500" />
 
                 <div className="flex items-center justify-between w-full">
-                    <h1 className="text-[24px] font-bold">Minha estante</h1>
+                    <h1 className="text-[24px] text-white font-bold">Minha Estante</h1>
                 </div>
             </div>
-            <Filtering/>
+            <Filtering />
             <BookList />
         </div>
     );

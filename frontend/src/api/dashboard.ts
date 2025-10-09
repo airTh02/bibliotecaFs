@@ -29,11 +29,11 @@ export const putStatus = async(id: number, token: string, status: StatusType) =>
         {status},
         {headers: {Authorization: `Bearer ${token}`}}
     )
-    return data.status
+    return data
 }
 
 export const deleteBookFromUser = async (id: number, token: string) => {
-    const {data} = await axios.delete(`${API_URL}/user/${id}`, {
+    const {data} = await axios.delete(`${API_URL}/books/user/${id}`, {
         headers: {Authorization: `Bearer ${token}`}
     })
     return data

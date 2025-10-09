@@ -300,10 +300,19 @@ export const bookStatus = async (req, res) => {
             })
         }
 
-        res.json({
-            message: 'status alterado com sucesso',
-            status: book.status
+        const updatedBook = await Book.findByPk(id, {
+            include: [{
+                model: User,
+                as: "Users",
+                where: {id: req.user.id},
+                through: {
+                    attributes: ['status', 'favorite']
+                },
+                attributes: []
+            }]
         })
+
+        res.json(updatedBook)
 
     } catch (error) {
         console.error("erro no bookStatus", error)

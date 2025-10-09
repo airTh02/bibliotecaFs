@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { useState } from "react"
 import { Button } from "./button"
+import { LogOut } from 'lucide-react';
 
 
 type Props = {
@@ -22,7 +23,7 @@ export const Modal = ({ onConfirm }: Props) => {
     return (
 
         <div>
-            <Button className="cursor-pointer mr-2" size={`sm`} onClick={() => setOpen(true)}>Sair</Button>
+            <Button variant={"outline"} className=" bg-gray-800 text-white border-0 cursor-pointer mr-2" size={`sm`} onClick={() => setOpen(true)}><LogOut/>Sair</Button>
 
             <Dialog open={open} onOpenChange={setOpen} >
                 <DialogContent>

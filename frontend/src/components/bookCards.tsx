@@ -22,14 +22,16 @@ import { Modal2 } from './ui/modal2';
 type Props = {
     book: Book
     onChangeStatus: (bookId: number, newStatus: StatusType) => void
+    onDeleteUserBook: (bookId: number) => void
 }
 
-export const BookCard = ({ book, onChangeStatus }: Props) => {
+export const BookCard = ({ book, onChangeStatus, onDeleteUserBook }: Props) => {
 
-
+    
     const initialStatus = book.Users?.[0]?.UserBook?.status || 'nenhum';
     const [status, setStatus] = useState<StatusType>(initialStatus)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [bookToDelete, setBookToDelete] = useState<number | null>(null)
 
     const handleStatus = async (newStatus: StatusType) => {
         setStatus(newStatus)
@@ -44,33 +46,35 @@ export const BookCard = ({ book, onChangeStatus }: Props) => {
 
     }
     const handleOpenModalRemove = () => {
+        setBookToDelete(book.id)
         setIsModalOpen(true)
     }
-    const handleRemoveFromBookcase = () => {
-
+    const handleConfirmRemovalFromBookCase = () => {
+        if(bookToDelete) {
+            onDeleteUserBook(bookToDelete)
+            setIsModalOpen(false)
+            setBookToDelete(null)
+        }
     }
 
-    useEffect(() => {
-        const newStatus = book.Users?.[0]?.UserBook?.status || 'nenhum';
-        setStatus(newStatus);
-    }, [book.Users?.[0]?.UserBook?.status]);
+    
 
     return (
         <div>
-            <div className={`w-full ${book.synopsis.length > 82 ? 'min-h-[220px]' : 'min-h-[200px]'} py-8 px-5 border border-gray-600/10 rounded-md transition duration-500 ease-in-out hover:border-gray-600/20 hover:shadow-xl/10 `}>
+            <div className={`w-full ${book.synopsis.length > 82 ? 'min-h-[220px]' : 'min-h-[200px]'} bg-gray-800 py-8 px-5 border border-gray-900/20 rounded-2xl transition duration-500 ease-in-out hover:border-gray-900/40 hover:shadow-2xl hover:-translate-y-1 `}>
                 <div className="flex justify-between ">
                     <div className='flex flex-col gap-2'>
-                        <h1 className='font-medium text-xl'>{firstLetterUppercase(book.title)}</h1>
-                        <p className='text-sm text-gray-400 flex items-center gap-2 '><UserRound size={16} />{book.author}</p>
+                        <h1 className='font-medium text-xl text-white'>{firstLetterUppercase(book.title)}</h1>
+                        <p className='text-sm text-gray-300 flex items-center gap-2 '><UserRound size={16} />{book.author}</p>
                     </div>
                     <div className='flex gap-3 '>
 
-                        <Button variant={"outline"} className='cursor-pointer text-gray-400 border-0 hover:text-red-600 hover:bg-gray-900'><Heart size={16} /></Button>
+                        <Button variant={"outline"} className='cursor-pointer text-gray-300 border-0 hover:text-red-600 hover:bg-gray-900'><Heart size={16} /></Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="cursor-pointer text-gray-400 border-0 hover:text-white hover:bg-gray-900"
+                                    className="cursor-pointer text-gray-300 border-0 hover:text-white hover:bg-gray-900"
                                 >
                                     <EllipsisVertical size={16} />
                                 </Button>
@@ -90,7 +94,7 @@ export const BookCard = ({ book, onChangeStatus }: Props) => {
                             <Modal2
                                 open={isModalOpen}
                                 setModal={setIsModalOpen}
-                                onConfirm={() => alert('sua mamae')}
+                                onConfirm={handleConfirmRemovalFromBookCase}
                                 title='TÍTULO'
                                 description='descrição'
                                 button1='Cancelar'
@@ -119,11 +123,11 @@ export const BookCard = ({ book, onChangeStatus }: Props) => {
                     </div>
                 </div>
                 <div>
-                    <p className='mt-4 text-sm text-gray-400 break-all '>{book.synopsis}</p>
+                    <p className='mt-4 text-sm text-gray-300 break-all '>{book.synopsis}</p>
                 </div>
                 <div className='flex items-center gap-6 '>
-                    <p className='mt-4 text-[11px] text-gray-400 flex  gap-1'># {book.genre} </p>
-                    <p className='mt-4 text-[11px] text-gray-400 flex  gap-1'><Calendar size={16} /> {book.year} </p>
+                    <p className='mt-4 text-[11px] text-gray-300 flex  gap-1'># {book.genre} </p>
+                    <p className='mt-4 text-[11px] text-gray-300 flex  gap-1'><Calendar size={16} /> {book.year} </p>
                 </div>
             </div>
         </div>

@@ -1,36 +1,33 @@
-import { useDashboard } from "@/context/dashboardContext"
-import { DashboardData } from "@/types/dashboard"
-import Image, { StaticImageData } from "next/image"
+
+import { ReactNode } from "react"
 
 type Props = {
     color: string
-    emoji: string
+    emoji: ReactNode
     name: string
     data: number | null
 }
 
 
 
-export const DashboardInfoCards = ({ color, emoji, name, data}: Props) => {
+export const DashboardInfoCards = ({ color, emoji, name, data }: Props) => {
     return (
-        <div className={`flex flex-col py-3 px-5 w-56 border-1 rounded-md transition duration-300 ease-in-out hover:-translate-y-1   
-            ${color === 'blue' ? 'border-blue-600/18 bg-linear-to-r/srgb from-sky-100/10 to-sky-300/20 hover:border-blue-900/60 hover:shadow-lg/20' : '' } 
-            ${color === 'green' ? 'border-emerald-600/18 bg-linear-to-r/srgb from-emerald-400-100/10 to-emerald-300/20 hover:border-emerald-900/60 hover:shadow-lg/20' : ''}
-            ${color === 'yellow' ? 'border-amber-600/18 bg-linear-to-r/srgb from-amber-400-100/10 to-amber-300/20 hover:border-amber-900/60 hover:shadow-lg/20' : ''}
-            ${color === 'red' ? 'border-red-600/18 bg-linear-to-r/srgb from-red-400-100/10 to-red-400/20 hover:border-red-900/60 hover:shadow-lg/20' : ''}
+        <div className={`flex flex-col py-5 px-8 w-72 h-40  rounded-2xl transition duration-300 ease-in-out hover:-translate-y-1   
+            ${color === 'blue' ? ' bg-gradient-to-br from-blue-600 to-blue-700 hover:border-blue-600 hover:shadow-2xl transition-all duration-300' : ''} 
+            ${color === 'purple' ? 'bg-gradient-to-br from-purple-600 to-purple-700  hover:shadow-2xl transition-all duration-300' : ''}
+            ${color === 'orange' ? 'bg-gradient-to-br from-red-500 to-orange-500 hover:shadow-2xl transition-all duration-300' : ''}
+              ${color === 'bluelight' ? 'bg-gradient-to-br from-blue-500 to-blue-600 hover:shadow-2xl transition-all duration-300' : ''}
             `
         }>
             <div className="flex items-center justify-between text-center">
-                <p className="text-gray-400 font-bold text-sm">{name}</p>
-                <Image
-                    src={emoji}
-                    alt="emoji"
-                    width={30}
-                    height={30}
-                />
+                <div className={`flex items-center justify-center w-10 h-10 bg-white/20 rounded-full`}>
+                    {emoji}
+                </div>
+
             </div>
-            <div className="text-3xl font-bold mt-3">
-                {data}
+            <div className="flex flex-col text-3xl font-bold mt-6 gap-1.5">
+                <p className="text-white">{data}</p>
+                <p className="text-white font-normal text-sm ">{name}</p>
             </div>
         </div>
     )

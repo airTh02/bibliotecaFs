@@ -3,16 +3,25 @@ import Image from "next/image";
 import logo from "../../public/assets/logo.png"
 import { Button } from "./ui/button";
 import { Modal } from "./ui/modal";
+import {Columns2, Menu} from 'lucide-react'
 
-export const Header = () => {
+type Props = {
+    handleOpeningSidebar: () => void
+}
+
+export const Header = ({handleOpeningSidebar}: Props) => {
     const { user, logout } = useAuth()
 
     return (
 
-        <div className="flex w-full h-2 items-center justify-between px-10 mt-10">
-            <Image alt="logo" src={logo} className="w-10 h-10 " />
-            <div className="flex flex-1 justify-end items-center ">
-                <span className="text-2xl mr-5">{user?.name ? user?.name.charAt(0).toUpperCase() + user?.name.slice(1) : "usuário"}</span>
+        <div className="flex w-full h-16 items-center justify-between px-4 border-b border-gray-600 bg-gray-900 ">
+            <div className="flex items-center justify-start gap-3 ">
+                            <Button variant={'outline'} className="bg-gray-900 border-0 hover:bg-blue-800 rounded-full cursor-pointer" size={"sm"} onClick={handleOpeningSidebar}><Columns2 className="text-white " /></Button>
+                            <Menu className="text-white" size={16}/>
+                            <h1 className="text-[24px] font-bold text-white">Dashboard</h1>
+                        </div>
+            <div className="flex items-center gap-5 ">
+                <span className="text-lg font-normal text-gray-300">{user?.name ? user?.name.charAt(0).toUpperCase() + user?.name.slice(1) : "usuário"}</span>
                 <Modal onConfirm={logout}></Modal>
             </div>
         </div>
