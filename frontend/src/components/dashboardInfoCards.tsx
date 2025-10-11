@@ -13,10 +13,10 @@ type Props = {
 export const DashboardInfoCards = ({ color, emoji, name, data }: Props) => {
     return (
         <div className={`flex flex-col py-5 px-8 w-72 h-40  rounded-2xl transition duration-300 ease-in-out hover:-translate-y-1   
-            ${color === 'blue' ? ' bg-gradient-to-br from-blue-600 to-blue-700 hover:border-blue-600 hover:shadow-2xl transition-all duration-300' : ''} 
-            ${color === 'purple' ? 'bg-gradient-to-br from-purple-600 to-purple-700  hover:shadow-2xl transition-all duration-300' : ''}
-            ${color === 'orange' ? 'bg-gradient-to-br from-red-500 to-orange-500 hover:shadow-2xl transition-all duration-300' : ''}
-              ${color === 'bluelight' ? 'bg-gradient-to-br from-blue-500 to-blue-600 hover:shadow-2xl transition-all duration-300' : ''}
+            ${color === 'blue' ? ' bg-gradient-to-br from-blue-600 to-blue-700/5 hover:border-blue-600 hover:shadow-2xl transition-all duration-300' : ''} 
+            ${color === 'purple' ? 'bg-gradient-to-br from-purple-600 to-purple-700/5 hover:shadow-2xl transition-all duration-300' : ''}
+            ${color === 'orange' ? 'bg-gradient-to-br from-red-500 to-orange-500/5 hover:shadow-2xl transition-all duration-300' : ''}
+              ${color === 'bluelight' ? 'bg-gradient-to-br from-blue-500 to-blue-600/5 hover:shadow-2xl transition-all duration-300' : ''}
             `
         }>
             <div className="flex items-center justify-between text-center">

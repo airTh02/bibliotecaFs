@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { BookCard } from "./bookCards"
 import { Book, StatusType } from "@/types/books"
-import { deleteBookFromUser, getBooks, getUserBooks, putStatus } from "@/api/dashboard"
+import { deleteBookFromUser, favoriteUserBook, getBooks, getUserBooks, putStatus } from "@/api/dashboard"
 import { useDashboard } from "@/context/dashboardContext"
+import { Toaster } from "sonner"
 
 
 // TODO: sla
@@ -67,15 +68,26 @@ export const BookList = () => {
         return remove
     }
 
+    const favoriteBook = async (bookId: number) => {
+        const token = localStorage.getItem('token')
+        if(!token) return 
+        const favoritedBook = await favoriteUserBook(bookId, token)
+        setData(prev => prev.map(book => book.id === bookId ? {...book, Users: [{...book.Users[0], UserBook: {...book.Users[0].UserBook, favorite: favoritedBook.favorite}}]}: book))
+        await refreshDashboard()
+        return favoritedBook
+    }
+
     useEffect(() => {
         userbooksReq()
     }, [])
 
     return (
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 gap-7">
             {data.map((book) => (
-                <BookCard key={book.id} book={book} onChangeStatus={changeStatus} onDeleteUserBook={deleteUserBook} />
+                <BookCard key={book.id} book={book} onChangeStatus={changeStatus} onDeleteUserBook={deleteUserBook} onFavoriteBook={favoriteBook} />
             ))}
+            <Toaster closeButton/>
         </div>
+        
     )
 }
