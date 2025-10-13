@@ -32,6 +32,7 @@ export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBoo
     const [bookToDelete, setBookToDelete] = useState<number | null>(null)
     const [isFavorited, setIsFavorited] = useState<boolean>(initalFavorite)
 
+
     const handleStatus = async (newStatus: StatusType) => {
         setStatus(newStatus)
         onChangeStatus(book.id, newStatus)
@@ -85,7 +86,7 @@ export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBoo
                                 ), {
                                     action: "undo"
                                 }
-                            )
+                                )
                             }}
                         >
                             <Heart
@@ -129,7 +130,7 @@ export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBoo
                         }
                     </div>
                 </div>
-                <div className='flex justify-between mt-2 items-center'>
+                <div className='flex justify-between mt-4 items-center'>
                     <div className={`flex items-center px-4 py-[2px]  text-[11px] h-fit text-center font-bold rounded-full 
                         ${status === 'quer ler' ? 'bg-gradient-to-br from-purple-600 to-purple-700/5  text-white ' : ''}
                         ${status === 'lendo' ? 'bg-gradient-to-br from-blue-600 to-blue-700/5  text-white' : ''}
@@ -173,12 +174,12 @@ export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBoo
                         </DropdownMenu>
                     </div>
                 </div>
-                <div>
-                    <p className='mt-4 text-sm text-gray-300 break-all line-clamp-2 overflow-hidden text-ellipsis'>{book.synopsis}</p>
+                <div className='mt-6'>
+                    <p className=' text-sm text-gray-300 break-all line-clamp-2 overflow-hidden text-ellipsis'>{book.synopsis}</p>
                 </div>
-                <div className='flex items-center gap-6 '>
-                    <p className='mt-4 text-[11px] text-gray-300 flex  gap-1'># {book.genre} </p>
-                    <p className='mt-4 text-[11px] text-gray-300 flex  gap-1'><Calendar size={16} /> {book.year} </p>
+                <div className='flex items-center gap-6 mt-4'>
+                    <p className='text-[11px] text-gray-300 flex  gap-1'># {book.genre} </p>
+                    <p className='text-[11px] text-gray-300 flex  gap-1'><Calendar size={16} /> {book.year} </p>
                 </div>
             </div>
         </div >

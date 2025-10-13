@@ -3,13 +3,16 @@ import { useDashboard } from "@/context/dashboardContext";
 import { Filtering } from "@/components/filtering";
 import { BookList } from "@/components/bookCardsList";
 import { BookOpen, Book, Eye, List, Heart } from 'lucide-react';
+import { useState } from "react";
+import { Filter } from "@/types/books";
 
-
+type Filtros = Filter
 
 export const Dashboard = () => {
 
     const { data } = useDashboard()
-
+    const [filter, setFilter] = useState<Filtros>("todos")
+    const [searchResult, setSearchResult] = useState<string>('')
 
     return (
         <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
@@ -53,8 +56,20 @@ export const Dashboard = () => {
                     <h1 className="text-[24px] text-white font-bold">Minha Estante</h1>
                 </div>
             </div>
-            <Filtering />
-            <BookList />
+            <Filtering  
+                totalLivros={data?.totalBooks.count ?? 0}
+                totalFavoritos={data?.totalFavoritos ?? 0}
+                totalLendo={data?.totalLendo ?? 0}
+                totalQuerLer={data?.totalQuerLer ?? 0}
+                totalLidos={data?.totalLidos ?? 0}
+                onChangeFilter={setFilter} 
+                currentFilter={filter}
+                onSearchChange={setSearchResult}
+            />
+            <BookList 
+                filter={filter}
+                search={searchResult}
+            />
         </div>
     );
 };

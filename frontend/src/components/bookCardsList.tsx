@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { BookCard } from "./bookCards"
-import { Book, StatusType } from "@/types/books"
+import { Book, Filter, StatusType } from "@/types/books"
 import { deleteBookFromUser, favoriteUserBook, getBooks, getUserBooks, putStatus } from "@/api/dashboard"
 import { useDashboard } from "@/context/dashboardContext"
 import { Toaster } from "sonner"
@@ -13,9 +13,10 @@ type UserBookResponse = {
     favorite: boolean;
     Book: Book;
 };
+type BookListProps = {filter: Filter, search: string}
 
 
-export const BookList = () => {
+export const BookList = ({filter, search}: BookListProps) => {
 
     const { refreshDashboard } = useDashboard()
 
@@ -36,6 +37,7 @@ export const BookList = () => {
                 }
             }]
         }))
+        console.log(formatedData)
         setData(formatedData)
 
     }
@@ -77,13 +79,27 @@ export const BookList = () => {
         return favoritedBook
     }
 
+    const filteredBooks = data.filter(book => {
+        const userBook = book.Users?.[0]?.UserBook
+        if(!userBook) return false
+
+
+        
+        if(search)
+        if(filter === 'todos') return book
+        if(filter === "lidos") return userBook.status === 'lido' 
+        if(filter === "lendo") return userBook.status === 'lendo' 
+        if(filter === "quer ler") return userBook.status === 'quer ler' 
+        if(filter === "favoritos") return userBook.favorite === true
+    })
+
     useEffect(() => {
         userbooksReq()
     }, [])
 
     return (
         <div className="grid grid-cols-3 gap-7">
-            {data.map((book) => (
+            {filteredBooks.map((book) => (
                 <BookCard key={book.id} book={book} onChangeStatus={changeStatus} onDeleteUserBook={deleteUserBook} onFavoriteBook={favoriteBook} />
             ))}
             <Toaster closeButton/>

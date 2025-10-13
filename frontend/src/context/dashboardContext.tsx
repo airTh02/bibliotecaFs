@@ -26,13 +26,14 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             if (!token) return
             const res = await getDashboard(token)
             setData(res)
-        } catch (error){
+        } catch (error) {
             console.error("erro no fetchdashboard ", error)
         }
         finally {
             setLoading(false)
         }
     }
+
 
     useEffect(() => {
         fetchDashboard()
@@ -43,7 +44,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             {children}
         </DashboardContext.Provider>
     )
-    
+
 }
 
 export const useDashboard = () => useContext(DashboardContext)
