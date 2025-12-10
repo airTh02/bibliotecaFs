@@ -12,16 +12,16 @@ router.get('/userbooks', auth, getUserBooks)
 router.get('/:id', getBookById)
 
 
-router.post('/', auth, isAdmin, createBook) //isAdmin
+router.post('/', auth, isAdmin, createBook) 
 router.post('/:id/favorite', auth, favoriteBook)
 
 
-router.put('/:id', auth, isAdmin, editBook) //isAdmin
+router.put('/:id', auth, isAdmin, editBook) 
 router.patch('/:id/status', auth, bookStatus)
 
 
 router.delete('/user/:id', auth, removeUserBooks)
-router.delete('/:id', isAdmin, deleteBook) //isAdmin
+router.delete('/:id', isAdmin, deleteBook) 
 
 
 

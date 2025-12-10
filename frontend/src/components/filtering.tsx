@@ -1,4 +1,4 @@
-import { ReactEventHandler, useState } from "react";
+import { ReactEventHandler, useEffect, useState } from "react";
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import {
@@ -8,7 +8,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 import { Search, Funnel, ArrowDownNarrowWide, ArrowUpNarrowWide, Grid3x3, Menu } from 'lucide-react';
-import { Filter } from "@/types/books";
+import { Filter, OrdenationFilter, ViewModel } from "@/types/books";
 
 type Props = {
     totalLivros: number | null
@@ -22,18 +22,22 @@ type FilteringProps = {
     onChangeFilter: (filter: Filter) => void
     currentFilter: Filter
     onSearchChange: (value: string) => void
+    onOrdenationChange: (filter: OrdenationFilter) => void
+    onDownUpChange: (value: boolean) => void
+    viewModelCards: (viewmodel: ViewModel) => void
 }
 
 
-export const Filtering = ({ totalLivros, totalLidos, totalLendo, totalQuerLer, totalFavoritos, onChangeFilter, currentFilter, onSearchChange }: Props & FilteringProps) => {
+export const Filtering = ({ totalLivros, totalLidos, totalLendo, totalQuerLer, totalFavoritos, onChangeFilter, currentFilter, onSearchChange, onOrdenationChange, onDownUpChange, viewModelCards }: Props & FilteringProps) => {
 
     // TODO: Terminar esses filtros, dar uma otimizada no código 
     // TODO: hover dos ultimos 2 botoes nao tá ficando branco
 
     const [filtrado, setFiltrado] = useState<boolean>(false)
-    const [viewModel, setViewModel] = useState<string | null>('grid')
+    const [viewModel, setViewModel] = useState<ViewModel>('grid')
     const [search, setSearch] = useState<string>('')
-
+    const [ordenationFilter, setOrdenationFilter] = useState<string | null>(null)
+    const [upOrDownOrdering, setUpOrDownOrdering] = useState<boolean>(false)
 
     const handleInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
@@ -46,15 +50,24 @@ export const Filtering = ({ totalLivros, totalLidos, totalLendo, totalQuerLer, t
         onChangeFilter(newFilter)
     }
 
-
-    const handleFilteringByAddData = () => {
-        setFiltrado(!filtrado)
+    const handleOrdenationFilter = (filter: OrdenationFilter) => {
+        setOrdenationFilter(filter)
+        onOrdenationChange(filter)
     }
 
-    const handleViewModel = (model: string) => {
+    const handleFilteringDowntoUp = () => {
+        setFiltrado(prev => !prev)
+        setUpOrDownOrdering(prev => !prev)
+    }
+
+    const handleViewModel = (model: ViewModel) => {
         setViewModel(i => i === model ? null : model)
-
+        viewModelCards(viewModel)
     }
+
+    useEffect(() => {
+        onDownUpChange(upOrDownOrdering)
+    }, [upOrDownOrdering])
 
     return (
         <div className=" bg-gray-800 border border-gray-600/18 rounded-md py-4 px-4">
@@ -93,37 +106,31 @@ export const Filtering = ({ totalLivros, totalLidos, totalLendo, totalQuerLer, t
                             </Button>
                         </DropdownMenuTrigger>
 
-                        <DropdownMenuContent className="px-1 bg-black border-gray-500">
+                        <DropdownMenuContent className="px-1 bg-black border-gray-500 rounded-2xl">
                             <DropdownMenuItem
-                                onClick={() => alert('aa')}
+                                onClick={() => handleOrdenationFilter('ano')}
                                 className=" text-white focus:text-black focus:bg-blue-500 rounded-xl"
                             >
-                                Data de Adição
+                                Ano de Publicação
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => alert('aa')}
+                                onClick={() => handleOrdenationFilter('titulo')}
                                 className=" text-white focus:text-black focus:bg-blue-500 rounded-xl"
                             >
                                 Título
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() => alert('aa')}
+                                onClick={() => handleOrdenationFilter('autor')}
                                 className=" text-white focus:text-black focus:bg-blue-500 rounded-xl"
                             >
                                 Autor
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => alert('aa')}
-                                className=" text-white focus:text-black focus:bg-blue-500 rounded-xl"
-                            >
-                                Páginas
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Button
                         variant={"outline"}
                         className=" group bg-gray-900 hover:bg-blue-500 border-0 cursor-pointer"
-                        onClick={handleFilteringByAddData}
+                        onClick={handleFilteringDowntoUp}
                     >
                         {filtrado && <ArrowUpNarrowWide className="text-white group-hover:text-white" />}
                         {!filtrado && <ArrowDownNarrowWide className="text-white group-hover:text-white" />}
@@ -134,16 +141,18 @@ export const Filtering = ({ totalLivros, totalLidos, totalLendo, totalQuerLer, t
                     <Button
                         size={"default"}
                         variant={"outline"}
-                        onClick={() => handleViewModel('grid')} value={'grid'} className={`group hover:bg-gray-700 cursor-pointer rounded-r-none border-r-0 ${viewModel === 'grid' ? ' bg-gray-900 ' : ''} `}
+                        onClick={() => handleViewModel('grid')} value={'grid'}
+                        className={`group bg-gray-900 hover:bg-blue-500 cursor-pointer rounded-xl  rounded-r-none border-0 ${viewModel === 'grid' ? ' bg-blue-500 border-0 ' : ''} `}
                     >
-                        <Grid3x3 className={`${viewModel === 'grid' ? 'text-white' : 'text-black'}`} />
+                        <Grid3x3 className={`${viewModel === 'grid' ? 'text-black' : 'text-white'}`} />
                     </Button>
                     <Button
                         size={"default"}
                         variant={"outline"}
-                        onClick={() => handleViewModel('list')} value={'list'} className={`group  hover:bg-gray-700 cursor-pointer rounded-l-none border-l-0 ${viewModel === 'list' ? ' bg-gray-900 ' : ''} `}
+                        onClick={() => handleViewModel('list')} value={'list'}
+                        className={`group bg-gray-900 hover:bg-blue-500 cursor-pointer rounded-xl rounded-l-none border-0 ${viewModel === 'list' ? ' bg-blue-500 border-0' : ''} `}
                     >
-                        <Menu className={`${viewModel === 'list' ? 'text-white' : 'text-black'}`} />
+                        <Menu className={`${viewModel === 'list' ? 'text-black' : 'text-white'}`} />
                     </Button>
                 </div>
 

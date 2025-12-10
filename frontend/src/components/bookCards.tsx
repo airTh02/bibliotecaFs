@@ -8,7 +8,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 import { useState } from 'react';
-import { Book, StatusType } from '@/types/books';
+import { Book, StatusType, ViewModel } from '@/types/books';
 import { Modal2 } from './ui/modal2';
 import { toast, } from 'sonner';
 
@@ -20,9 +20,10 @@ type Props = {
     onChangeStatus: (bookId: number, newStatus: StatusType) => void
     onDeleteUserBook: (bookId: number) => void
     onFavoriteBook: (bookId: number) => void
+    onViewModelChange: (value: ViewModel) => void
 }
 
-export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBook }: Props) => {
+export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBook, onViewModelChange }: Props) => {
 
 
     const initialStatus = book.Users?.[0]?.UserBook?.status || 'nenhum';
@@ -64,11 +65,11 @@ export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBoo
 
 
     return (
-        <div className='h-[260px] w-[410px] flex flex-col justify-between'>
+        <div className={`h-[260px] w-[410px]  flex flex-col justify-between`}>
             <div className={`w-full  min-h-[255px]  bg-gray-800 py-6 px-5 border border-gray-900/20 rounded-2xl transition duration-500 ease-in-out hover:shadow-2xl hover:border hover:border-gray-500 `}>
                 <div className="flex justify-between ">
                     <div className='flex flex-col gap-2'>
-                        <h1 className='font-medium text-xl text-white'>{firstLetterUppercase(book.title)}</h1>
+                        <h1 className='font-medium text-xl text-white break-all text-ellipsis line-clamp-1'>{firstLetterUppercase(book.title)}</h1>
                         <p className='text-sm text-gray-300 flex items-center gap-2 '><UserRound size={16} />{firstLetterUppercase(book.author)}</p>
                     </div>
                     <div className='flex gap-3 '>

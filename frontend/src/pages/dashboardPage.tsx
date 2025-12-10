@@ -4,7 +4,7 @@ import { Filtering } from "@/components/filtering";
 import { BookList } from "@/components/bookCardsList";
 import { BookOpen, Book, Eye, List, Heart } from 'lucide-react';
 import { useState } from "react";
-import { Filter } from "@/types/books";
+import { Filter, OrdenationFilter, ViewModel } from "@/types/books";
 
 type Filtros = Filter
 
@@ -13,13 +13,16 @@ export const Dashboard = () => {
     const { data } = useDashboard()
     const [filter, setFilter] = useState<Filtros>("todos")
     const [searchResult, setSearchResult] = useState<string>('')
-
+    const [ordenationFilter, setOrdenationFilter] = useState<OrdenationFilter>("ano")
+    const [upOrDownValue, setUpOrDownValue] = useState<boolean>(false)
+    const [viewModel, setViewModel] = useState<ViewModel>("grid")
+    
     return (
         <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
 
             <div className="flex  items-center w-full gap-5 mt-2">
                 <DashboardInfoCards
-                    data={data?.totalBooks.count ?? 0}
+                    data={data?.totalBooks ?? 0}
                     name={'Total de Livros'}
                     emoji={<Book size={20} className="text-white" />}
                     color={'blue'}
@@ -57,7 +60,7 @@ export const Dashboard = () => {
                 </div>
             </div>
             <Filtering  
-                totalLivros={data?.totalBooks.count ?? 0}
+                totalLivros={data?.totalBooks ?? 0}
                 totalFavoritos={data?.totalFavoritos ?? 0}
                 totalLendo={data?.totalLendo ?? 0}
                 totalQuerLer={data?.totalQuerLer ?? 0}
@@ -65,10 +68,16 @@ export const Dashboard = () => {
                 onChangeFilter={setFilter} 
                 currentFilter={filter}
                 onSearchChange={setSearchResult}
+                onOrdenationChange={setOrdenationFilter}
+                onDownUpChange={setUpOrDownValue}
+                viewModelCards={setViewModel}
             />
             <BookList 
                 filter={filter}
                 search={searchResult}
+                ordenationFilter={ordenationFilter}
+                downOrUpValue={upOrDownValue}
+                viewModelValue={viewModel}
             />
         </div>
     );

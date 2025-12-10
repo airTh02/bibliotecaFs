@@ -31,3 +31,5 @@ export type getBooksType = {
 
 export type StatusType = 'lido' | 'lendo' | 'quer ler' | 'nenhum'
 export type Filter = "todos" | "lidos" | "favoritos" | "lendo" | "quer ler"
+export type OrdenationFilter = "ano" | "autor" | "titulo"
+export type ViewModel = "grid" | "list" | null

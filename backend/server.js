@@ -8,7 +8,6 @@ import dotenv from 'dotenv'
 const app = express()
 const port = 5000
 
-// middlewares
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true
@@ -16,7 +15,6 @@ app.use(cors({
 app.use(express.json())
 dotenv.config()
 
-// importar as rotas
 
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);

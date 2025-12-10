@@ -7,21 +7,11 @@ import { body, validationResult } from 'express-validator';
 
 export const getBooks = async (req, res) => {
     try {
-
-        // pegar os parametros da query e normalizar
         const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
         const limit = Math.max(parseInt(req.query.limit, 10) || 10, 1);
-
-        // offset para qntas páginas pular
         const offset = (page - 1) * limit
-
-        // pegar possiveis filtros vindo da query
         const { title, author, genre } = req.query
-
-        // montar where, começa vazio e só adicionamos propriedades se o filtro existir
         const where = {}
-
-        // filtro com texto parcial, usamos LIKE com %term%
         if (title) {
             where.title = { [Op.like]: `%${title}%` }
         }
@@ -31,8 +21,6 @@ export const getBooks = async (req, res) => {
         if (genre) {
             where.genre = { [Op.like]: `%${genre}%` }
         }
-
-        // busca no banco de dados com paginação
         const { rows: books, count: total } = await Book.findAndCountAll({
             where,
             limit,
@@ -50,9 +38,6 @@ export const getBooks = async (req, res) => {
                 }
             ]
         })
-
-        // calcular total de páginas e montar resposta
-
         const totalPages = Math.ceil(total / limit);
 
         return res.json({
@@ -70,24 +55,14 @@ export const getBooks = async (req, res) => {
 
 export const getBookById = async (req, res) => {
     try {
-        // pega id da url
         const { id } = req.params
-
-        // validar ID 
         if (!id || isNaN(id)) {
             return res.status(400).json({ message: 'ID inválido22' })
         }
-
-        // buscar livro no banco usando orm, sequelize. Findbypk = find by primary key
         const book = await Book.findByPk(id);
-
-        // verificar se o livro existe
         if (!book) {
             return res.status(404).json({ message: 'livro n encontrado' })
         }
-
-        // se existir, ele retorna os dados
-
         return res.json(book)
     } catch (error) {
         console.error("erro em getbookbyid", error);
@@ -97,7 +72,6 @@ export const getBookById = async (req, res) => {
 
 export const createBook = async (req, res) => {
     try {
-        // validar campos
         await body('title').notEmpty().withMessage('Título é obrigatorio').run(req)
         await body('author').notEmpty().withMessage('Autor é obrigatorio').run(req)
         await body('genre').notEmpty().withMessage('genero é obrigatorio').run(req)
@@ -108,18 +82,11 @@ export const createBook = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
         }
-
-        // pegar os dados do body
         const { title, author, genre, year, synopsis } = req.body;
-
-        // criar livro no banco - orm sequelize
         const newBook = await Book.create({
             title, author, genre, year, synopsis,
             createdBy: req.user.id
         })
-
-        // retornar se tudo deu certo
-
         return res.status(201).json({
             message: 'livro criado com sucesso',
             book: newBook
@@ -133,15 +100,10 @@ export const createBook = async (req, res) => {
 
 export const editBook = async (req, res) => {
     try {
-        //pegar id do livro
         const { id } = req.params
-
-        // validar iD
         if (!id || isNaN(id)) {
             return res.status(400).json({ message: 'ID inválido' });
         }
-
-        //validar os campos recebidos para atualização dos livros
         await body('title').optional().notEmpty().withMessage('Título é obrigatorio').run(req)
         await body('author').optional().notEmpty().withMessage('autor nao pode estar vazio').run(req)
         await body('genre').optional().notEmpty().withMessage('genero nao pode estar vazio').run(req)
@@ -152,15 +114,10 @@ export const editBook = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
         }
-
-        // buscar o livro no banco
-
         const book = await Book.findByPk(id)
         if (!book) {
             return res.status(403).json({ message: 'livro nao encontrado' })
         }
-
-        // pegar dados e atualizar
         const { title, author, genre, year, synopsis } = req.body
 
         await book.update({
@@ -170,8 +127,6 @@ export const editBook = async (req, res) => {
             year: year ?? book.year,
             synopsis: synopsis ?? book.synopsis
         })
-
-        //retornar resposta pro banco
         return res.status(200).json({
             message: 'livro atualizado com sucesso',
             book,
@@ -184,23 +139,17 @@ export const editBook = async (req, res) => {
 
 
 export const deleteBook = async (req, res) => {
-    try {// pegar o ID do livro
-        const { id } = req.params
+    try {
 
-        // verificar se o livro realmente existe
+        const { id } = req.params
         if (!id || isNaN(id)) {
             return res.status(400).json({ message: 'esse livro n existe' })
         }
-
-        //procurar livro no banco de dados
         const book = await Book.findByPk(id)
         if (!book) {
             return res.status(404).json({ message: 'livro não existe' })
         }
-
-        // deletar livro do banco
         await book.destroy()
-
         return res.status(200).json({ message: 'livro destruido com sucesso. ' })
     } catch (error) {
         console.error("erro no deletebook", error)
@@ -210,26 +159,20 @@ export const deleteBook = async (req, res) => {
 
 export const favoriteBook = async (req, res) => {
     try {
-        //pegar id do livro
         const { id } = req.params
-        // conferir se id ta certo
         if (!id || isNaN(id)) {
             return res.status(400).json({ message: 'parametro de livro errado' })
         }
-        /// livro existe? 
         const book = await Book.findByPk(id)
         if (!book) {
             return res.status(404).json({ message: 'livro nao existe no banco de dados' })
         }
-        //verificar se ja existe algum registro de favoritos para esse usuário e livro
         let userBook = await UserBook.findOne({
             where: {
                 user_id: req.user.id,
                 book_id: id
             }
         })
-
-        // alterar status de favorito   
         if (userBook) {
             userBook.favorite = !userBook.favorite
             await userBook.save()
@@ -241,9 +184,6 @@ export const favoriteBook = async (req, res) => {
                 status: "nenhum"
             })
         }
-
-        //retorna a resposta
-
         return res.json({
             message: userBook.favorite ? 'Livro favoritado' : 'Livro desfavoritado',
             favorite: userBook.favorite
@@ -252,42 +192,30 @@ export const favoriteBook = async (req, res) => {
         console.error("erro no favoriteBook", error)
         return res.status(500).json({ message: 'erro ao atualizar favorito.' })
     }
-
 }
 
 export const bookStatus = async (req, res) => {
     try {
-        // parametros
+       
         const { id } = req.params
         const { status } = req.body
-
-        // verificar se o livro realmente existe
         if (!id || isNaN(id)) {
             return res.status(401).json({ message: 'erro de parametro' })
         }
-
-        //verificar status
         const validStatus = ['lido', 'lendo', 'quer ler', 'nenhum']
         if (!validStatus.includes(status)) {
             return res.status(400).json({ message: 'status inválido' })
         }
-
-        //achar o livro
         const book = await Book.findByPk(id);
         if (!book) {
             return res.status(404).json({ message: 'livro nao encontrado' })
         }
-
-        // verificar se o usuário ja tem um registro naquele livro
-
         let userBookStatus = await UserBook.findOne({
             where: {
                 user_id: req.user.id,
                 book_id: id
             }
         })
-
-        // enviar status pro banco de dados
         if (userBookStatus) {
             userBookStatus.status = status
             await userBookStatus.save()
@@ -299,12 +227,11 @@ export const bookStatus = async (req, res) => {
                 status: status
             })
         }
-
         const updatedBook = await Book.findByPk(id, {
             include: [{
                 model: User,
                 as: "Users",
-                where: {id: req.user.id},
+                where: { id: req.user.id },
                 through: {
                     attributes: ['status', 'favorite']
                 },
@@ -313,7 +240,6 @@ export const bookStatus = async (req, res) => {
         })
 
         res.json(updatedBook)
-
     } catch (error) {
         console.error("erro no bookStatus", error)
         return res.status(500).json({ message: 'erro ao atualizar status' })
@@ -322,12 +248,11 @@ export const bookStatus = async (req, res) => {
 
 export const getDashboard = async (req, res) => {
     try {
-        // pegando todos os dados da database
-        const totalBooks = await Book.findAndCountAll({
-            attributes: ['title'],
-            order: [['title', 'DESC']]
-        })
-
+        const totalBooks = await UserBook.count({
+            where: {
+                user_id: req.user.id,
+            }
+        });
         const totalLidos = await UserBook.count({
             where: {
                 user_id: req.user.id,
@@ -352,8 +277,6 @@ export const getDashboard = async (req, res) => {
                 favorite: true
             }
         })
-
-        // enviando o json na req
         res.json({
             totalBooks,
             totalLidos,
@@ -375,32 +298,27 @@ export const getUserBooks = async (req, res) => {
         const user = req.user.id
 
         const userBooks = await UserBook.findAll({
-            where: {user_id: user},
-            include: [{model: Book}]
+            where: { user_id: user },
+            include: [{ model: Book }]
         })
 
         res.json(userBooks)
-
     } catch (err) {
         console.error("erro no getuserbooks", err)
     }
 }
 
-export const removeUserBooks = async (req, res) =>{
+export const removeUserBooks = async (req, res) => {
     try {
         const id = req.params.id
         const user = req.user.id
-        
         const bookDeleted = await UserBook.destroy({
-            where: {user_id: user, book_id: id }
+            where: { user_id: user, book_id: id }
         })
-
-        if(!bookDeleted) return res.status(404).json({message: 'livro não encontrado na estante'})
-
-        return res.status(200).json({message: 'livro deletado da estante com sucesso.'})    
-        
+        if (!bookDeleted) return res.status(404).json({ message: 'livro não encontrado na estante' })
+        return res.status(200).json({ message: 'livro deletado da estante com sucesso.' })
     } catch (err) {
-        console.error("erro no removeUserBooks" , err)
-        return res.status(500).json({message: 'erro ao deletar usuario'})
+        console.error("erro no removeUserBooks", err)
+        return res.status(500).json({ message: 'erro ao deletar usuario' })
     }
 }

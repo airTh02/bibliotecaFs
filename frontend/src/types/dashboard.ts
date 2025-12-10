@@ -10,7 +10,7 @@ export type TotalBooks = {
 }
 
 export type DashboardData = {
-    totalBooks: TotalBooks
+    totalBooks: number
     totalLidos: number
     totalLendo: number
     totalQuerLer: number
