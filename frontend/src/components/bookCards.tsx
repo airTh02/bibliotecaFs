@@ -20,10 +20,9 @@ type Props = {
     onChangeStatus: (bookId: number, newStatus: StatusType) => void
     onDeleteUserBook: (bookId: number) => void
     onFavoriteBook: (bookId: number) => void
-    onViewModelChange: (value: ViewModel) => void
 }
 
-export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBook, onViewModelChange }: Props) => {
+export const BookCard = ({ book, onChangeStatus, onDeleteUserBook, onFavoriteBook}: Props) => {
 
 
     const initialStatus = book.Users?.[0]?.UserBook?.status || 'nenhum';

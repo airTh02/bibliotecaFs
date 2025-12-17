@@ -7,7 +7,7 @@ const syncDatabase = async () => {
         await sequelize.authenticate();
         console.log("Conectado ao MySQL com Sequelize");
 
-        await sequelize.sync({ force: alter });
+        await sequelize.sync();
         console.log("Tabelas criadas");
 
         process.exit();

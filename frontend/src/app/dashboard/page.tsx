@@ -12,20 +12,23 @@ const Home = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
 
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (user === null) return router.push('/login')
-  }, [user])
+    console.log(loading)
+    console.log(user)
+    if (loading == false) {
+       if(user == null) return router.push('/login')
+    }
+  }, [user, loading])
 
   const handleInteractionSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+
   return (
-
-
     <div className="flex h-screen bg-gray-900">
       <div className={`transtion-all duration-300 ease-in-out overflow-hidden ${sidebarOpen ? 'w-[15%]' : 'w-0' }  `}>
         <SidebarDashboard />

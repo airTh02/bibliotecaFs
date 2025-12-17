@@ -9,18 +9,21 @@ import axios from 'axios'
 
 type AuthContextType = {
     user: User | null;
+    loading: boolean;
     setUser: (user: User | null) => void
     logout: () => void
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
+    loading: true,
     setUser: () => { },
     logout: () => { }
 })
 
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [loading, setLoading] = useState<boolean>(true)
     const [user, setUser] = useState<User | null>(null)
     const router = useRouter()
 
@@ -28,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const token = localStorage.getItem("token")
         if (token) {
-
+            setLoading(false)
             axios.get("http://localhost:5000/auth/me", {
                 headers: { Authorization: `Bearer ${token}` }
             })
@@ -51,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout }} >
+        <AuthContext.Provider value={{ user, loading, setUser, logout }} >
             {children}
         </AuthContext.Provider>
     )

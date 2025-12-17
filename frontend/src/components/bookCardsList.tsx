@@ -135,7 +135,7 @@ export const BookList = ({ filter, search, ordenationFilter, downOrUpValue, view
     return (
         <div className="grid grid-cols-3 gap-7">
             {orderedBooks.map((book) => (
-                <BookCard key={book.id} book={book} onChangeStatus={changeStatus} onDeleteUserBook={deleteUserBook} onFavoriteBook={favoriteBook} onViewModelChange={viewModelValue} />
+                <BookCard key={book.id} book={book} onChangeStatus={changeStatus} onDeleteUserBook={deleteUserBook} onFavoriteBook={favoriteBook}  />
             ))}
             <Toaster closeButton />
         </div>
