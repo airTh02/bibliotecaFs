@@ -1,6 +1,4 @@
 import { Heart, EllipsisVertical, UserRound, Calendar, Trash2 } from 'lucide-react';
-import { Button } from './ui/button';
-
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -9,8 +7,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useState } from 'react';
 import { Book, StatusType, ViewModel } from '@/types/books';
-import { Modal2 } from './ui/modal2';
+
 import { toast, } from 'sonner';
+import { Modal2 } from '../ui/modal2';
+import { Button } from '../ui/button';
 
 
 //TODO: arrumar esse status aqui logica de merda

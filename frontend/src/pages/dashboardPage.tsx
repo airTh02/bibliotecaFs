@@ -1,10 +1,12 @@
-import { DashboardInfoCards } from "@/components/dashboardInfoCards";
+import { DashboardInfoCards } from "@/components/dashboardComponents/dashboardInfoCards";
 import { useDashboard } from "@/context/dashboardContext";
-import { Filtering } from "@/components/filtering";
-import { BookList } from "@/components/bookCardsList";
+import { Filtering } from "@/components/dashboardComponents/filtering";
+import { BookList } from "@/components/dashboardComponents/bookCardsList";
 import { BookOpen, Book, Eye, List, Heart } from 'lucide-react';
 import { useState } from "react";
 import { Filter, OrdenationFilter, ViewModel } from "@/types/books";
+import { Button } from "@/components/ui/button";
+import { AddBookModal } from "@/components/dashboardComponents/addBookModal";
 
 type Filtros = Filter
 
@@ -16,7 +18,12 @@ export const Dashboard = () => {
     const [ordenationFilter, setOrdenationFilter] = useState<OrdenationFilter>("ano")
     const [upOrDownValue, setUpOrDownValue] = useState<boolean>(false)
     const [viewModel, setViewModel] = useState<ViewModel>("grid")
+    const [registerModal, setRegisterModal] = useState<boolean>(false);
     
+    const handleAddModal = () => {
+        setRegisterModal(!registerModal)
+    }
+
     return (
         <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
 
@@ -52,6 +59,14 @@ export const Dashboard = () => {
                     color={'orange'}
                 />
             </div>
+            <div>
+                <Button variant="outline" className="cursor-pointer" onClick={handleAddModal}>Adicionar Livro</Button>
+                        <AddBookModal
+                            open={registerModal}
+                            setModal={handleAddModal}
+                        />
+            </div>
+            
             <div className="flex items-center justify-start gap-3 mt-10">
                 <BookOpen size={25} className="text-blue-500" />
 

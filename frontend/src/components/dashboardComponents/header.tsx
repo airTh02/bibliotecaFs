@@ -1,8 +1,8 @@
 import { useAuth } from "@/context/authContext";
 import Image from "next/image";
 import logo from "../../public/assets/logo.png"
-import { Button } from "./ui/button";
-import { Modal } from "./ui/modal";
+import { Modal } from '../ui/modal';
+import { Button } from '../ui/button';
 import {Columns2, Menu} from 'lucide-react'
 
 type Props = {
