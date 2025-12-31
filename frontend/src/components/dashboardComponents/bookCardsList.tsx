@@ -6,8 +6,6 @@ import { useDashboard } from "@/context/dashboardContext"
 import { Toaster } from "sonner"
 
 
-// TODO: sla
-
 type UserBookResponse = {
     status: StatusType;
     favorite: boolean;

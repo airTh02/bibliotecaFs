@@ -47,3 +47,18 @@ export const favoriteUserBook = async (id: number, token: string) => {
         })
     return data
 }
+
+export const addUserBook = async (token: string, title: string, author: string, genre: string, year: number , synopsis?: string ) => {
+    const { data } = await axios.post(`${API_URL}/books/createuserbook`, 
+     {
+        title,
+        author,
+        genre,
+        year,
+        synopsis
+     },
+     {
+        headers: {Authorization: `Bearer ${token}`}
+     })
+     return data
+}

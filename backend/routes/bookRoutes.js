@@ -1,5 +1,5 @@
 import express from 'express'
-import { createBook, getBookById, getBooks, editBook, deleteBook, favoriteBook, bookStatus, getDashboard, getUserBooks, removeUserBooks } from '../controllers/bookController.js'
+import { createBook, getBookById, getBooks, editBook, deleteBook, favoriteBook, bookStatus, getDashboard, getUserBooks, removeUserBooks, createUserBook } from '../controllers/bookController.js'
 import { auth } from '../middlewares/auth.js';
 
 const router = express.Router()
@@ -11,6 +11,7 @@ router.get('/userbooks', auth, getUserBooks)
 router.get('/:id', getBookById)
 
 
+router.post('/createuserbook', auth, createUserBook)
 router.post('/', auth, createBook) 
 router.post('/:id/favorite', auth, favoriteBook)
 

@@ -36,17 +36,13 @@ export const RegisterForm = () => {
     const onSubmit = async (values: RegisterFormType) => {
         try {
             const { data } = await axios.post("http://localhost:5000/auth/register", values)
-
             localStorage.setItem("token", data.token)
             setUser(data.user)
-
             router.push("/dashboard")
         } catch (error: any) {
             alert(error.response?.data?.message || "erro ao se cadastrar")
         }
-
     }
-
     return (
 
         <div className='flex min-h-screen items-center justify-center'>
