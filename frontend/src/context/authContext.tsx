@@ -30,26 +30,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const token = localStorage.getItem("token")
-        if (token) {
+        if (!token) {
+            setUser(null)
             setLoading(false)
-            axios.get("http://localhost:5000/auth/me", {
-                headers: { Authorization: `Bearer ${token}` }
+        }
+        if(token){
+        axios.get("http://localhost:5000/auth/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then((res) => setUser(res.data.user))
+            .catch((err) => {
+                console.error("Erro ao buscar usuário", err)
+                localStorage.removeItem("token")
+                setUser(null)
+                router.push("/login")
             })
-                .then((res) => setUser(res.data.user))
-                .catch((err) => {
-                    console.error("Erro ao buscar usuário", err)
-                    localStorage.removeItem("token")
-                    setUser(null)
-                    router.push("/login")
-                })
+            .finally(() => {
+                setLoading(false)
+            })
         }
     }, [])
-
 
     const logout = () => {
         localStorage.removeItem("token")
         setUser(null)
-        router.push("/login")
+        router.push("/")
     }
 
 

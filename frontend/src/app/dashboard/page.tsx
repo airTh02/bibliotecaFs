@@ -12,21 +12,19 @@ const Home = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
 
-  const { user, loading } = useAuth()
   const router = useRouter()
+  const { user, loading } = useAuth()
+  console.log(user)
 
-  useEffect(() => {
-    console.log(loading)
-    console.log(user)
-    if (loading == false) {
-       if(user == null) return router.push('/login')
-    }
-  }, [user, loading])
+ useEffect(() => {
+  if(!loading && !user) {
+    router.replace('/')
+  }
+ }, [user, loading, router])
 
   const handleInteractionSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
-
 
   return (
     <div className="flex h-screen bg-gray-900">
