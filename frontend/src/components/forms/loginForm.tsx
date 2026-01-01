@@ -34,15 +34,11 @@ export const LoginForm = () => {
     const onSubmit = async (values: LoginFormType) => {
         try {
             const { data } = await axios.post("http://localhost:5000/auth/login", values)
-
             localStorage.setItem("token", data.token)
-
             const meResponse = await axios.get("http://localhost:5000/auth/me", {
                 headers: { Authorization: `Bearer ${data.token}` }
             })
-
             setUser(meResponse.data.user)
-
             router.push("/dashboard")
         } catch (error: any) {
             console.error("erro no submit", error)
