@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/airTh02/bibliotecaFs/issues"
   },
-  "homepage": "https://github.com/airTh02/bibliotecaFs#readme"
+  "homepage": "https://github.com/airTh02/bibliotecaFs#readme",
+  "devDependencies": {
+    "sequelize-cli": "^6.6.3"
+  }
 }

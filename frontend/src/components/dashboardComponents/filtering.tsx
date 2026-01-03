@@ -1,6 +1,6 @@
 import { ReactEventHandler, useEffect, useState } from "react";
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 import {
     DropdownMenu,
     DropdownMenuTrigger,

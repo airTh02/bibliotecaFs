@@ -20,7 +20,4 @@ const UserBook = sequelize.define("UserBook", {
         underscored: true
     })
 
-
-
-
 export default UserBook;

@@ -6,23 +6,18 @@ import { useDashboard } from "@/context/dashboardContext"
 import { Toaster } from "sonner"
 
 
-// TODO: sla
-
 type UserBookResponse = {
     status: StatusType;
     favorite: boolean;
     Book: Book;
 };
-type BookListProps = { filter: Filter, search: string, ordenationFilter: OrdenationFilter | null, downOrUpValue: boolean, viewModelValue: ViewModel }
+type BookListProps = { filter: Filter, search: string, ordenationFilter: OrdenationFilter | null, downOrUpValue: boolean, viewModelValue: ViewModel,  reload: number }
 
-
-
-export const BookList = ({ filter, search, ordenationFilter, downOrUpValue, viewModelValue}: BookListProps) => {
+export const BookList = ({ filter, search, ordenationFilter, downOrUpValue, viewModelValue, reload}: BookListProps) => {
 
     const { refreshDashboard } = useDashboard()
 
     const [data, setData] = useState<Book[]>([])
-
 
     const userbooksReq = async () => {
         const token = localStorage.getItem('token')
@@ -122,15 +117,13 @@ export const BookList = ({ filter, search, ordenationFilter, downOrUpValue, view
             const result = sorter(a, b)
             return downOrUpValue ? result : -result 
         })
-
         return sortedBooks
     }, [data, filter, search, ordenationFilter, downOrUpValue ])
 
 
     useEffect(() => {
         userbooksReq()
-    }, [])
-
+    }, [reload])
 
     return (
         <div className="grid grid-cols-3 gap-7">

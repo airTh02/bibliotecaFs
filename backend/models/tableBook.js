@@ -25,6 +25,11 @@ const Book = sequelize.define("Book", {
     synopsis: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    createdByUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        field: "created_by_user_id"
     }
 }, {
     tableName: "books",

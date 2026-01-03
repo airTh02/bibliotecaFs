@@ -1,6 +1,6 @@
 "use client"
-import { Header } from "@/components/header"
-import { SidebarDashboard } from "@/components/sidebarDashboard"
+import { Header } from "@/components/dashboardComponents/header"
+import { SidebarDashboard } from "@/components/dashboardComponents/sidebarDashboard"
 import { useAuth } from "@/context/authContext"
 import { Dashboard } from "@/pages/dashboardPage"
 import { useRouter } from "next/navigation"

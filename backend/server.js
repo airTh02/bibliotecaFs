@@ -1,8 +1,8 @@
+import 'dotenv/config'
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js'
-import dotenv from 'dotenv'
 
 
 const app = express()
@@ -13,7 +13,6 @@ app.use(cors({
   credentials: true
 }))
 app.use(express.json())
-dotenv.config()
 
 
 app.use('/auth', authRoutes);

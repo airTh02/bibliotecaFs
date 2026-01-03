@@ -97,6 +97,47 @@ export const createBook = async (req, res) => {
     }
 }
 
+export const createUserBook = async (req, res) => {
+    try {
+        
+        const statusValidation = ['lido','lendo','quer ler']
+
+        await body('title').notEmpty().withMessage('Título é obrigatorio').run(req)
+        await body('author').notEmpty().withMessage('Autor é obrigatorio').run(req)
+        await body('genre').notEmpty().withMessage('genero é obrigatorio').run(req)
+        await body('year').isInt({ min: 0 }).withMessage("ano deve ser um numero válido").run(req)
+        await body('synopsis').optional().isString().run(req)
+        await body('status').notEmpty().isIn(statusValidation).run(req)
+        
+        const errors = validationResult(req) 
+        if(!errors.isEmpty()) {
+            return res.status(400).json({errors: errors.array()})
+        }
+        
+        const {title, author, genre, year, synopsis, status} = req.body;
+        const newBook = await Book.create({
+            title, author, genre, year, synopsis, 
+            createdByUserId: req.user.id
+        })
+
+        const newUserBook = await UserBook.create({
+            user_id: req.user.id,
+            book_id: newBook.id,
+            status: status,
+            favorite: false
+
+        })
+        return res.status(201).json({
+            message: 'livro do usuário cadastrado com sucesso',
+            book: newBook,
+            userBook: newUserBook
+        })
+    } catch (error) {
+        console.log('erro ao criar livro do usuário', error)
+        return res.status(500).json({message: 'erro ao criar livro do usuário'})
+    }
+}
+
 
 export const editBook = async (req, res) => {
     try {

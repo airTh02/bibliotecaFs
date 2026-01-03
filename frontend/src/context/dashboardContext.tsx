@@ -33,8 +33,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
             setLoading(false)
         }
     }
-
-
     useEffect(() => {
         fetchDashboard()
     }, [])

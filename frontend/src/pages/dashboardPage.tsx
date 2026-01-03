@@ -1,10 +1,12 @@
-import { DashboardInfoCards } from "@/components/dashboardInfoCards";
+import { DashboardInfoCards } from "@/components/dashboardComponents/dashboardInfoCards";
 import { useDashboard } from "@/context/dashboardContext";
-import { Filtering } from "@/components/filtering";
-import { BookList } from "@/components/bookCardsList";
-import { BookOpen, Book, Eye, List, Heart } from 'lucide-react';
+import { Filtering } from "@/components/dashboardComponents/filtering";
+import { BookList } from "@/components/dashboardComponents/bookCardsList";
+import { BookOpen, Book, Eye, List, Heart, LibraryBig  } from 'lucide-react';
 import { useState } from "react";
 import { Filter, OrdenationFilter, ViewModel } from "@/types/books";
+import { Button } from "@/components/ui/button";
+import { AddBookModal } from "@/components/dashboardComponents/addBookModal";
 
 type Filtros = Filter
 
@@ -16,7 +18,13 @@ export const Dashboard = () => {
     const [ordenationFilter, setOrdenationFilter] = useState<OrdenationFilter>("ano")
     const [upOrDownValue, setUpOrDownValue] = useState<boolean>(false)
     const [viewModel, setViewModel] = useState<ViewModel>("grid")
-    
+    const [registerModal, setRegisterModal] = useState<boolean>(false);
+    const [reloadBooks, setReloadBooks] = useState(0)
+
+    const handleAddModal = () => {
+        setRegisterModal(!registerModal)
+    }
+
     return (
         <div className="container flex flex-col w-full h-screen max-w-7xl m-auto gap-6">
 
@@ -42,7 +50,7 @@ export const Dashboard = () => {
                 <DashboardInfoCards
                     data={data?.totalQuerLer ?? 0}
                     name={'Total quero ler'}
-                    emoji={<List  size={20} className="text-white" />}
+                    emoji={<List size={20} className="text-white" />}
                     color={'purple'}
                 />
                 <DashboardInfoCards
@@ -52,32 +60,43 @@ export const Dashboard = () => {
                     color={'orange'}
                 />
             </div>
+
+
             <div className="flex items-center justify-start gap-3 mt-10">
                 <BookOpen size={25} className="text-blue-500" />
 
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-full ">
                     <h1 className="text-[24px] text-white font-bold">Minha Estante</h1>
+                    <div>
+                        <Button variant="outline" className="cursor-pointer text-black bg-blue-500 border-0" onClick={handleAddModal}><LibraryBig className="text-black" /> Adicionar Livro</Button>
+                        <AddBookModal
+                            open={registerModal}
+                            setModal={handleAddModal}
+                            onBookCreated={() => setReloadBooks(prev => prev + 1)}
+                        />
+                    </div>
                 </div>
             </div>
-            <Filtering  
+            <Filtering
                 totalLivros={data?.totalBooks ?? 0}
                 totalFavoritos={data?.totalFavoritos ?? 0}
                 totalLendo={data?.totalLendo ?? 0}
                 totalQuerLer={data?.totalQuerLer ?? 0}
                 totalLidos={data?.totalLidos ?? 0}
-                onChangeFilter={setFilter} 
+                onChangeFilter={setFilter}
                 currentFilter={filter}
                 onSearchChange={setSearchResult}
                 onOrdenationChange={setOrdenationFilter}
                 onDownUpChange={setUpOrDownValue}
                 viewModelCards={setViewModel}
             />
-            <BookList 
+            <BookList
                 filter={filter}
                 search={searchResult}
                 ordenationFilter={ordenationFilter}
                 downOrUpValue={upOrDownValue}
                 viewModelValue={viewModel}
+                reload={reloadBooks}
             />
         </div>
     );
