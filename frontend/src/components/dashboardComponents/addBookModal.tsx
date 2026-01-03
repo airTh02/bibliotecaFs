@@ -20,10 +20,12 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { addUserBook } from "@/api/dashboard";
 
 type Props = {
   open: boolean
   setModal: (value: boolean) => void
+  onBookCreated: () => void
 }
 
 const addBookSchema = z.object({
@@ -31,13 +33,14 @@ const addBookSchema = z.object({
   author: z.string().min(1, 'Nome do autor obrigatório.'),
   genre: z.string().min(1, 'Gênero do livro é obrigatório.'),
   year: z.number().min(1000, 'Ano inválido.').max(new Date().getFullYear(), 'Ano não pode ser maior que o atual'),
-  synopsis: z.string().optional(),
+  synopsis: z.string(),
   status: z.enum(['quer ler', 'lendo', 'lido'])
 })
 
 type AddBookType = z.infer<typeof addBookSchema>
 
-export const AddBookModal = ({ open, setModal }: Props) => {
+export const AddBookModal = ({ open, setModal, onBookCreated }: Props) => {
+
   const form = useForm({
     resolver: zodResolver(addBookSchema),
     defaultValues: {
@@ -50,9 +53,25 @@ export const AddBookModal = ({ open, setModal }: Props) => {
     }
   })
 
-  const onSubmit = (data: AddBookType) => {
-    console.log(data)
-    setModal(false)
+  const onSubmit = async (data: AddBookType) => {
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) return
+      const newBook = await addUserBook(
+          token,
+          data.title,
+          data.author,
+          data.genre,
+          data.year,
+          data.status,
+          data.synopsis
+      )
+      onBookCreated()
+      setModal(false)
+      form.reset()
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
